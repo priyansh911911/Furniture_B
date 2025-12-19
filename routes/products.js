@@ -7,14 +7,17 @@ const router = express.Router();
 // Get all products (public)
 router.get('/', async (req, res) => {
   try {
+    console.log('Fetching products...');
     const { category, page = 1, limit = 8 } = req.query;
     const query = category ? { category } : {};
+    console.log('Query:', query);
     
     const products = await Product.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
     
+    console.log('Products found:', products.length);
     const total = await Product.countDocuments(query);
     
     res.json({
@@ -24,7 +27,8 @@ router.get('/', async (req, res) => {
       total
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get products error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
@@ -37,7 +41,8 @@ router.get('/:id', async (req, res) => {
     }
     res.json(product);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get single product error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
@@ -99,7 +104,8 @@ router.put('/:id', auth, upload.array('images', 4), async (req, res) => {
 
     res.json(product);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Update product error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
@@ -112,7 +118,8 @@ router.delete('/:id', auth, async (req, res) => {
     }
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Delete product error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 

@@ -19,7 +19,8 @@ router.get('/', async (req, res) => {
     
     res.json(categories);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Categories error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 

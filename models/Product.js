@@ -51,7 +51,8 @@ const productSchema = new mongoose.Schema({
     default: true
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  suppressReservedKeysWarning: true
 });
 
 productSchema.pre('save', function(next) {
