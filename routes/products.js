@@ -7,18 +7,17 @@ const router = express.Router();
 // Get all products (public)
 router.get('/', async (req, res) => {
   try {
-    console.log('Fetching products...');
     const { category, page = 1, limit = 8 } = req.query;
     const query = category ? { category } : {};
-    console.log('Query:', query);
     
     const products = await Product.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .maxTimeMS(8000)
+      .lean();
     
-    console.log('Products found:', products.length);
-    const total = await Product.countDocuments(query);
+    const total = await Product.countDocuments(query).maxTimeMS(8000);
     
     res.json({
       products,
@@ -28,6 +27,9 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Get products error:', error);
+    if (error.name === 'MongooseError' || error.message.includes('buffering timed out')) {
+      return res.status(503).json({ message: 'Database temporarily unavailable', error: 'Connection timeout' });
+    }
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });

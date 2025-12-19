@@ -24,6 +24,16 @@ app.use(session({
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname)));
 
+// Health check endpoint
+app.get('/api/health', async (req, res) => {
+  try {
+    await mongoose.connection.db.admin().ping();
+    res.json({ status: 'OK', database: 'Connected' });
+  } catch (error) {
+    res.status(503).json({ status: 'Error', database: 'Disconnected', error: error.message });
+  }
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
@@ -31,8 +41,16 @@ app.use('/api/categories', require('./routes/categories'));
 app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/contact', require('./routes/contact'));
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI)
+// MongoDB connection with optimized settings
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+  bufferMaxEntries: 0,
+  maxPoolSize: 10,
+  minPoolSize: 5,
+  maxIdleTimeMS: 30000,
+  connectTimeoutMS: 10000
+})
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log('MongoDB connection error:', err));
 
