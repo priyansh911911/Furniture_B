@@ -42,15 +42,7 @@ app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/contact', require('./routes/contact'));
 
 // MongoDB connection with optimized settings
-mongoose.connect(process.env.MONGODB_URI, {
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  bufferMaxEntries: 0,
-  maxPoolSize: 10,
-  minPoolSize: 5,
-  maxIdleTimeMS: 30000,
-  connectTimeoutMS: 10000
-})
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log('MongoDB connection error:', err));
 
