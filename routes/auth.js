@@ -33,6 +33,20 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Check session
+router.get('/check', (req, res) => {
+  if (req.session && req.session.adminId) {
+    res.json({
+      admin: {
+        id: req.session.adminId,
+        email: req.session.adminEmail
+      }
+    });
+  } else {
+    res.status(401).json({ message: 'Not authenticated' });
+  }
+});
+
 // Admin logout
 router.post('/logout', (req, res) => {
   req.session.destroy((err) => {

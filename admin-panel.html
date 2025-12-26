@@ -6,35 +6,258 @@
     <title>Furniture Admin Panel</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        body { 
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f9f9f9;
+            min-height: 100vh;
+            color: #2d3748;
+        }
         .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #B88E2F 0%, #8B6914 100%); color: white; padding: 1.5rem; margin-bottom: 2rem; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
-        .login-form, .card { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 2.5rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2); }
-        .form-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.8rem; font-weight: 600; color: #333; font-size: 0.95rem; }
-        input, select, textarea { width: 100%; padding: 1rem; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 0.95rem; transition: all 0.3s ease; background: rgba(255,255,255,0.9); }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: #B88E2F; box-shadow: 0 0 0 3px rgba(184,142,47,0.1); transform: translateY(-2px); }
-        button { background: linear-gradient(135deg, #B88E2F 0%, #8B6914 100%); color: white; padding: 1rem 2rem; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(184,142,47,0.3); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(184,142,47,0.4); }
-        .btn-danger { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); box-shadow: 0 4px 15px rgba(220,53,69,0.3); }
-        .btn-success { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); box-shadow: 0 4px 15px rgba(40,167,69,0.3); }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
-        .product-card { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-        .product-image { width: 100%; height: 220px; object-fit: cover; border-radius: 15px; margin-bottom: 1rem; }
+        .header { 
+            background: white; 
+            color: #333; 
+            padding: 2rem; 
+            margin-bottom: 2rem; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .login-form, .card { 
+            background: white; 
+            padding: 3rem; 
+            border-radius: 10px; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .form-group { margin-bottom: 1.8rem; }
+        label { 
+            display: block; 
+            margin-bottom: 0.8rem; 
+            font-weight: 600; 
+            color: #2d3748; 
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 1.2rem; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 16px; 
+            font-size: 0.95rem; 
+            transition: all 0.3s ease; 
+            background: rgba(255,255,255,0.9);
+            font-family: inherit;
+        }
+        input:focus, select:focus, textarea:focus { 
+            outline: none; 
+            border-color: #667eea; 
+            box-shadow: 0 0 0 4px rgba(102,126,234,0.1); 
+            transform: translateY(-2px);
+            background: white;
+        }
+        button { 
+            background: #B88E2F; 
+            color: white; 
+            padding: 1.2rem 2.5rem; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 0.95rem; 
+            transition: all 0.3s ease; 
+        }
+        button:hover { 
+            background: #9A7428;
+            transform: translateY(-2px);
+        }
+        .btn-danger { 
+            background: #E97171; 
+        }
+        .btn-danger:hover {
+            background: #dc3545;
+        }
+        .btn-success { 
+            background: #2EC1AC; 
+        }
+        .btn-success:hover {
+            background: #28a745;
+        }
+        .products-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); 
+            gap: 2.5rem; 
+        }
+        .product-card { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
+        }
+        .product-image { 
+            width: 100%; 
+            height: 240px; 
+            object-fit: cover; 
+            border-radius: 20px; 
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .product-card:hover .product-image { transform: scale(1.05); }
         .hidden { display: none; }
-        .error { color: #dc3545; margin-top: 0.5rem; font-weight: 500; }
-        .success { color: #28a745; margin-top: 0.5rem; font-weight: 500; }
-        .section-title { font-size: 1.8rem; font-weight: 700; color: #333; margin-bottom: 1.5rem; text-align: center; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 15px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .stat-number { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .stat-label { font-size: 0.9rem; opacity: 0.9; }
-        .tab-nav { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
-        .tab-btn { background: rgba(255,255,255,0.7); border: none; padding: 1rem 2rem; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
-        .tab-btn.active { background: linear-gradient(135deg, #B88E2F 0%, #8B6914 100%); color: white; }
+        .error { color: #e53e3e; margin-top: 0.5rem; font-weight: 600; }
+        .success { color: #38a169; margin-top: 0.5rem; font-weight: 600; }
+        .section-title { 
+            font-size: 2.2rem; 
+            font-weight: 800; 
+            color: #B88E2F; 
+            margin-bottom: 2rem; 
+            text-align: center;
+        }
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 3rem; 
+        }
+        .stat-card { 
+            background: #B88E2F; 
+            color: white; 
+            padding: 1.5rem; 
+            border-radius: 10px; 
+            text-align: center; 
+            box-shadow: 0 2px 10px rgba(184,142,47,0.2);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(184,142,47,0.3); }
+        .stat-number { 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            margin-bottom: 0.3rem;
+        }
+        .stat-label { 
+            font-size: 0.8rem; 
+            opacity: 0.9;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-number { 
+            font-size: 2.8rem; 
+            font-weight: 800; 
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .stat-label { 
+            font-size: 1rem; 
+            opacity: 0.9;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        .tab-nav { 
+            display: flex; 
+            gap: 1.5rem; 
+            margin-bottom: 3rem; 
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .tab-btn { 
+            background: white; 
+            border: 2px solid #eee; 
+            padding: 0.8rem 1.5rem; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            color: #333;
+        }
+        .tab-btn:hover {
+            background: #f8f9fa;
+            border-color: #B88E2F;
+            color: #B88E2F;
+        }
+        .tab-btn.active { 
+            background: #B88E2F; 
+            color: white;
+            border-color: #B88E2F;
+        }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        
+        /* Enhanced form styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        
+        /* Enhanced image preview styling */
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        /* Enhanced category card styling */
+        .category-add-section {
+            background: #FCF8F3;
+            padding: 2.5rem;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+            border: 1px solid #eee;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header { padding: 1rem; margin-bottom: 1rem; }
+            .header h1 { font-size: 1.3rem; }
+            .header > div { flex-direction: column; gap: 1rem; align-items: stretch; }
+            .login-form, .card { padding: 1.5rem; }
+            .form-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .image-grid { grid-template-columns: 1fr 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            .products-grid { grid-template-columns: 1fr; }
+            .tab-nav { justify-content: flex-start; overflow-x: auto; padding-bottom: 0.5rem; }
+            .tab-btn { white-space: nowrap; min-width: auto; padding: 0.8rem 1.5rem; font-size: 0.8rem; }
+            .section-title { font-size: 1.5rem; }
+            .stat-number { font-size: 2rem; }
+            .category-add-section > div { grid-template-columns: 1fr; gap: 1rem; }
+            .category-add-section button { width: 100%; }
+            input, select, textarea { padding: 0.8rem; font-size: 0.9rem; }
+            button { padding: 0.8rem 1.5rem; font-size: 0.8rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .container { padding: 5px; }
+            .header { padding: 0.8rem; }
+            .header h1 { font-size: 1.1rem; }
+            .login-form, .card { padding: 1rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .image-grid { grid-template-columns: 1fr; }
+            .tab-nav { gap: 0.5rem; }
+            .tab-btn { padding: 0.6rem 1rem; font-size: 0.75rem; }
+            .section-title { font-size: 1.2rem; }
+            .stat-number { font-size: 1.5rem; }
+            .product-card { padding: 1rem; }
+            .product-image { height: 180px; }
+            input, select, textarea { padding: 0.6rem; font-size: 0.85rem; }
+            button { padding: 0.6rem 1rem; font-size: 0.75rem; }
+            .form-group label { font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
@@ -107,7 +330,7 @@
                     <h2 class="section-title" id="form-title">Add New Product</h2>
                     <form id="product-form" enctype="multipart/form-data">
                         <input type="hidden" id="product-id">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div class="form-grid">
                             <div>
                                 <div class="form-group">
                                     <label>Product Name:</label>
@@ -132,30 +355,30 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" id="product-new"> Mark as New
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; text-transform: none;">
+                                        <input type="checkbox" id="product-new" style="width: auto;"> Mark as New
                                     </label>
                                 </div>
                             </div>
                             <div>
                                 <div class="form-group">
                                     <label>Product Images:</label>
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="image-grid">
                                         <div>
                                             <input type="file" id="product-image-1" accept="image/*" onchange="handleSingleImageChange(0)">
-                                            <div id="preview-1" style="margin-top: 5px;"></div>
+                                            <div id="preview-1" style="margin-top: 10px;"></div>
                                         </div>
                                         <div>
                                             <input type="file" id="product-image-2" accept="image/*" onchange="handleSingleImageChange(1)">
-                                            <div id="preview-2" style="margin-top: 5px;"></div>
+                                            <div id="preview-2" style="margin-top: 10px;"></div>
                                         </div>
                                         <div>
                                             <input type="file" id="product-image-3" accept="image/*" onchange="handleSingleImageChange(2)">
-                                            <div id="preview-3" style="margin-top: 5px;"></div>
+                                            <div id="preview-3" style="margin-top: 10px;"></div>
                                         </div>
                                         <div>
                                             <input type="file" id="product-image-4" accept="image/*" onchange="handleSingleImageChange(3)">
-                                            <div id="preview-4" style="margin-top: 5px;"></div>
+                                            <div id="preview-4" style="margin-top: 10px;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -188,9 +411,9 @@
             <div id="categories-tab" class="tab-content">
                 <div class="card">
                     <h2 class="section-title">Manage Categories</h2>
-                    <div style="background: rgba(184,142,47,0.1); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
-                        <h3 style="margin-bottom: 1rem;">Add New Category</h3>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;">
+                    <div class="category-add-section">
+                        <h3 style="margin-bottom: 1.5rem; color: #2d3748; font-weight: 700;">✨ Add New Category</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1.5rem; align-items: end;">
                             <div>
                                 <label>Category Name:</label>
                                 <input type="text" id="new-category-name" placeholder="Enter category name">
@@ -201,7 +424,7 @@
                             </div>
                             <button onclick="addNewCategory()" class="btn-success">Add Category</button>
                         </div>
-                        <div id="add-category-message" style="margin-top: 1rem; font-weight: bold;"></div>
+                        <div id="add-category-message" style="margin-top: 1.5rem; font-weight: bold;"></div>
                     </div>
                     <div id="categories-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;"></div>
                 </div>
@@ -233,7 +456,15 @@
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(tabName + '-tab').classList.add('active');
-            event.target.classList.add('active');
+            
+            // Find and activate the corresponding tab button
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => {
+                if (btn.textContent.includes('Products') && tabName === 'products') btn.classList.add('active');
+                if (btn.textContent.includes('Categories') && tabName === 'categories') btn.classList.add('active');
+                if (btn.textContent.includes('Inquiries') && tabName === 'inquiries') btn.classList.add('active');
+                if (btn.textContent.includes('Messages') && tabName === 'contacts') btn.classList.add('active');
+            });
         }
 
         // Check if already logged in
@@ -362,13 +593,13 @@
 
         async function checkSession() {
             try {
-                const response = await fetch(`${API_BASE}/products`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ test: true })
+                const response = await fetch(`${API_BASE}/auth/check`, {
+                    method: 'GET',
+                    credentials: 'include'
                 });
-                if (response.status !== 401) {
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('admin-email').textContent = data.admin.email;
                     showAdminPanel();
                 }
             } catch (error) {
@@ -413,31 +644,52 @@
         async function editProduct(id) {
             try {
                 const response = await fetch(`${API_BASE}/products/${id}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const product = await response.json();
                 
-                if (response.ok) {
-                    document.getElementById('product-id').value = product._id;
-                    document.getElementById('product-name').value = product.name;
-                    document.getElementById('product-description').value = product.description;
-                    document.getElementById('product-price').value = product.price;
-                    document.getElementById('product-original-price').value = product.originalPrice || '';
-                    document.getElementById('product-category').value = product.category;
-                    document.getElementById('product-new').checked = product.isNew;
-                    
-                    for (let i = 1; i <= 4; i++) {
-                        document.getElementById(`product-image-${i}`).value = '';
-                        document.getElementById(`preview-${i}`).innerHTML = '';
-                    }
-                    
-                    document.getElementById('form-title').textContent = 'Edit Product';
-                    document.getElementById('submit-btn').textContent = 'Update Product';
-                    document.getElementById('cancel-btn').classList.remove('hidden');
-                    
-                    showTab('products');
-                    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('product-id').value = product._id;
+                document.getElementById('product-name').value = product.name;
+                document.getElementById('product-description').value = product.description;
+                document.getElementById('product-price').value = product.price;
+                document.getElementById('product-original-price').value = product.originalPrice || '';
+                document.getElementById('product-category').value = product.category;
+                document.getElementById('product-new').checked = product.isNew;
+                document.getElementById('main-image-select').value = product.mainImageIndex || 0;
+                
+                // Clear existing image previews
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`product-image-${i}`).value = '';
+                    document.getElementById(`preview-${i}`).innerHTML = '';
                 }
+                
+                // Show existing images as previews
+                if (product.images && product.images.length > 0) {
+                    product.images.forEach((image, index) => {
+                        if (index < 4) {
+                            const preview = document.getElementById(`preview-${index + 1}`);
+                            preview.innerHTML = `
+                                <div style="position: relative; display: inline-block; margin-top: 0.5rem;">
+                                    <img src="${API_BASE.replace('/api', '')}/uploads/${image}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #B88E2F;">
+                                    <span style="position: absolute; top: -5px; right: -5px; background: #28a745; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✓</span>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+                
+                document.getElementById('form-title').textContent = 'Edit Product';
+                document.getElementById('submit-btn').textContent = 'Update Product';
+                document.getElementById('cancel-btn').classList.remove('hidden');
+                
+                showTab('products');
+                document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
             } catch (error) {
-                alert('Failed to load product data');
+                console.error('Edit product error:', error);
+                alert('Failed to load product data: ' + error.message);
             }
         }
 
