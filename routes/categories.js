@@ -51,25 +51,25 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
 });
 
 // Update category (admin only)
-router.put('/:name', auth, async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   try {
-    const { name } = req.params;
+    const { id } = req.params;
     const { name: newName } = req.body;
     
     if (!newName) {
       return res.status(400).json({ message: 'Category name is required' });
     }
     
-    let category = await Category.findOne({ name });
+    const category = await Category.findByIdAndUpdate(
+      id, 
+      { name: newName }, 
+      { new: true }
+    );
     
     if (!category) {
-      // Create new category if it doesn't exist
-      category = new Category({ name: newName });
-    } else {
-      category.name = newName;
+      return res.status(404).json({ message: 'Category not found' });
     }
     
-    await category.save();
     res.json(category);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -77,21 +77,22 @@ router.put('/:name', auth, async (req, res) => {
 });
 
 // Delete category (admin only)
-router.delete('/:name', auth, async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
-    const { name } = req.params;
+    const { id } = req.params;
     
-    // Check if any products use this category
-    const productCount = await Product.countDocuments({ category: name });
-    if (productCount > 0) {
-      return res.status(400).json({ message: `Cannot delete category. ${productCount} products are using this category.` });
-    }
-    
-    const category = await Category.findOneAndDelete({ name });
+    const category = await Category.findById(id);
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
     
+    // Check if any products use this category
+    const productCount = await Product.countDocuments({ category: category.name });
+    if (productCount > 0) {
+      return res.status(400).json({ message: `Cannot delete category. ${productCount} products are using this category.` });
+    }
+    
+    await Category.findByIdAndDelete(id);
     res.json({ message: 'Category deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
