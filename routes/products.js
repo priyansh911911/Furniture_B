@@ -63,22 +63,38 @@ router.get('/:id', async (req, res) => {
 // Create product (admin only)
 router.post('/', auth, upload.array('images', 4), async (req, res) => {
   try {
+    console.log('Creating product with data:', req.body);
+    console.log('Files received:', req.files?.length || 0);
+    
     const { name, description, price, originalPrice, category, discount, isNew, mainImageIndex } = req.body;
+    
+    // Validate required fields
+    if (!name || !description || !price || !category) {
+      return res.status(400).json({ message: 'Missing required fields: name, description, price, category' });
+    }
     
     let images = [];
     if (req.files && req.files.length > 0) {
+      console.log('Uploading images to Cloudinary...');
       for (const file of req.files) {
         try {
           const imageUrl = await uploadToCloudinary(file.buffer);
           images.push(imageUrl);
+          console.log('Image uploaded:', imageUrl);
         } catch (uploadError) {
           console.error('Cloudinary upload error:', uploadError);
-          // Continue without this image
+          return res.status(500).json({ message: 'Image upload failed', error: uploadError.message });
         }
       }
     }
     
+    // Generate unique product ID
+    const generateProductId = () => {
+      return 'FUR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+    };
+    
     const product = new Product({
+      productId: generateProductId(),
       name,
       description,
       price: Number(price),
@@ -90,7 +106,9 @@ router.post('/', auth, upload.array('images', 4), async (req, res) => {
       isNew: isNew === 'true'
     });
 
+    console.log('Saving product:', product);
     await product.save();
+    console.log('Product saved successfully');
     res.status(201).json(product);
   } catch (error) {
     console.error('Create product error:', error);

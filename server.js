@@ -5,6 +5,14 @@ const session = require('express-session');
 const path = require('path');
 require('dotenv').config();
 
+// Configure Cloudinary
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+  cloud_name: 'da9hvlrl8',
+  api_key: '325523678557325',
+  api_secret: 'nYAPluvRwcl4TghT3uy9hbY3UQ8'
+});
+
 const app = express();
 
 // Middleware
