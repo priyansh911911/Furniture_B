@@ -50,25 +50,23 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
   }
 });
 
-// Update category image (admin only)
-router.put('/:name', auth, upload.single('image'), async (req, res) => {
+// Update category (admin only)
+router.put('/:name', auth, async (req, res) => {
   try {
     const { name } = req.params;
+    const { name: newName } = req.body;
     
-    if (!req.file) {
-      return res.status(400).json({ message: 'Image is required' });
+    if (!newName) {
+      return res.status(400).json({ message: 'Category name is required' });
     }
     
     let category = await Category.findOne({ name });
     
     if (!category) {
       // Create new category if it doesn't exist
-      category = new Category({
-        name,
-        image: req.file.filename
-      });
+      category = new Category({ name: newName });
     } else {
-      category.image = req.file.filename;
+      category.name = newName;
     }
     
     await category.save();
