@@ -61,15 +61,20 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create product (admin only)
-router.post('/', upload.array('images', 4), async (req, res) => {
+router.post('/', auth, upload.array('images', 4), async (req, res) => {
   try {
     const { name, description, price, originalPrice, category, discount, isNew, mainImageIndex } = req.body;
     
     let images = [];
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        const imageUrl = await uploadToCloudinary(file.buffer);
-        images.push(imageUrl);
+        try {
+          const imageUrl = await uploadToCloudinary(file.buffer);
+          images.push(imageUrl);
+        } catch (uploadError) {
+          console.error('Cloudinary upload error:', uploadError);
+          // Continue without this image
+        }
       }
     }
     
@@ -94,7 +99,7 @@ router.post('/', upload.array('images', 4), async (req, res) => {
 });
 
 // Update product (admin only)
-router.put('/:id', upload.array('images', 4), async (req, res) => {
+router.put('/:id', auth, upload.array('images', 4), async (req, res) => {
   try {
     const { name, description, price, originalPrice, category, discount, isNew, mainImageIndex } = req.body;
     
@@ -136,7 +141,7 @@ router.put('/:id', upload.array('images', 4), async (req, res) => {
 });
 
 // Delete product (admin only)
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
