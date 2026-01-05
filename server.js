@@ -32,12 +32,10 @@ app.use(session({
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname)));
 
-// Admin panel route
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin-panel.html'));
-});
-
 // Routes
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/categories', require('./routes/categories'));
@@ -45,9 +43,17 @@ app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/contact', require('./routes/contact'));
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+})
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log('MongoDB connection error:', err));
+  .catch(err => {
+    console.log('MongoDB connection error:', err);
+    process.exit(1);
+  });
 
 const PORT = process.env.PORT || 5000;
 

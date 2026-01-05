@@ -23,10 +23,25 @@ router.post('/', async (req, res) => {
 });
 
 // Get all contacts (admin only)
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const contacts = await Contact.find().sort({ createdAt: -1 });
-    res.json(contacts);
+    const { page = 1, limit = 15 } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const contacts = await Contact.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+    
+    const total = await Contact.countDocuments();
+    const totalPages = Math.ceil(total / limit);
+    
+    res.json({
+      contacts,
+      currentPage: parseInt(page),
+      totalPages,
+      total
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

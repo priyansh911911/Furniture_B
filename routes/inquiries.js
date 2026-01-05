@@ -30,12 +30,29 @@ router.post('/', async (req, res) => {
 });
 
 // Get all inquiries (admin only)
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const inquiries = await Inquiry.find().populate('productDbId').sort({ createdAt: -1 });
-    res.json(inquiries);
+    const { page = 1, limit = 15 } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const inquiries = await Inquiry.find()
+      .populate('productDbId')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+    
+    const total = await Inquiry.countDocuments();
+    const totalPages = Math.ceil(total / limit);
+    
+    res.json({
+      inquiries,
+      currentPage: parseInt(page),
+      totalPages,
+      total
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Inquiries error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
